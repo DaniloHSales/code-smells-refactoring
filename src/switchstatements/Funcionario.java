@@ -1,13 +1,12 @@
 package switchstatements;
 
-public class Funcionario {
+// Refatorado: Replace Conditional with Polymorphism
+public abstract class Funcionario {
     private final String nome;
-    private final String cargo;
-    private final double salarioBase;
+    protected final double salarioBase;
 
-    public Funcionario(String nome, String cargo, double salarioBase) {
+    protected Funcionario(String nome, double salarioBase) {
         this.nome = nome;
-        this.cargo = cargo;
         this.salarioBase = salarioBase;
     }
 
@@ -15,31 +14,7 @@ public class Funcionario {
         return nome;
     }
 
-    // CODE SMELL: Switch Statements
-    public double calcularSalario() {
-        switch (cargo) {
-            case "GERENTE":
-                return salarioBase * 1.5;
-            case "DESENVOLVEDOR":
-                return salarioBase * 1.2;
-            case "ESTAGIARIO":
-                return salarioBase;
-            default:
-                throw new IllegalArgumentException("Cargo inválido: " + cargo);
-        }
-    }
+    public abstract double calcularSalario();
 
-    // O MESMO switch repetido em outro método
-    public double calcularBonus() {
-        switch (cargo) {
-            case "GERENTE":
-                return salarioBase * 0.30;
-            case "DESENVOLVEDOR":
-                return salarioBase * 0.10;
-            case "ESTAGIARIO":
-                return 0;
-            default:
-                throw new IllegalArgumentException("Cargo inválido: " + cargo);
-        }
-    }
+    public abstract double calcularBonus();
 }
