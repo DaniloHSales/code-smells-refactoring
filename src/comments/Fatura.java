@@ -2,39 +2,46 @@ package comments;
 
 import java.util.List;
 
+// Refatorado: Rename, Extract Method e Replace Magic Number with Constant
 public class Fatura {
 
-    // lista com os preços dos itens
-    private final List<Double> l;
+    private static final double DESCONTO_VIP = 0.10;
+    private static final double LIMITE_PARA_TAXA_ADMINISTRATIVA = 1000.0;
+    private static final double TAXA_ADMINISTRATIVA = 0.02;
 
-    // tipo do cliente: 1 = VIP, 2 = comum
-    private final int t;
+    private final List<Double> precosDosItens;
+    private final TipoCliente tipoCliente;
 
-    public Fatura(List<Double> l, int t) {
-        this.l = l;
-        this.t = t;
+    public Fatura(List<Double> precosDosItens, TipoCliente tipoCliente) {
+        this.precosDosItens = precosDosItens;
+        this.tipoCliente = tipoCliente;
     }
 
-    // CODE SMELL: Comments - comentários explicando código confuso
-    // calcula o valor final da fatura
-    public double calc() {
-        // soma o preço de todos os itens
-        double s = 0;
-        for (double v : l) {
-            s += v;
-        }
+    public double calcularValorFinal() {
+        double total = somarItens();
+        total = aplicarDescontoVip(total);
+        return aplicarTaxaAdministrativa(total);
+    }
 
-        // cliente VIP recebe 10% de desconto
-        if (t == 1) {
-            s = s - (s * 0.10);
+    private double somarItens() {
+        double soma = 0;
+        for (double preco : precosDosItens) {
+            soma += preco;
         }
+        return soma;
+    }
 
-        // se o total passar de 1000 reais, cobra 2% de taxa administrativa
-        if (s > 1000) {
-            s = s + (s * 0.02);
+    private double aplicarDescontoVip(double total) {
+        if (tipoCliente == TipoCliente.VIP) {
+            return total - (total * DESCONTO_VIP);
         }
+        return total;
+    }
 
-        // retorna o resultado
-        return s;
+    private double aplicarTaxaAdministrativa(double total) {
+        if (total > LIMITE_PARA_TAXA_ADMINISTRATIVA) {
+            return total + (total * TAXA_ADMINISTRATIVA);
+        }
+        return total;
     }
 }
